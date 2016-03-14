@@ -1,0 +1,136 @@
+alphanumeric = {' ':0, 'a':1, 'b':2, 'c':3, 'd':4, 'e':5, 'f':6, 'g':7, 'h':8, 'i':9, 'j':10, 'k':11, 'l':12, 'm':13, 'n':14, 'o':15, 'p':16, 'q':17, 'r':18, 's':19, 't':20, 'u':21, 'v':22, 'w':23, 'x':24, 'y':25, 'z':26, ',':27, '.':28, '!':29, '?':30, "'":31}
+
+numericalpha = {0:' ', 1:'a', 2:'b', 3:'c', 4:'d', 5:'e', 6:'f', 7:'g', 8:'h', 9:'i', 10:'j', 11:'k', 12:'l', 13:'m', 14:'n', 15:'o', 16:'p', 17:'q', 18:'r', 19:'s', 20:'t', 21:'u', 22:'v', 23:'w', 24:'x', 25:'y', 26:'z', 27:',', 28:'.', 29:'!', 30:'?', 31:"'"}
+
+print """So a quick explanantion of how RSA encryption works. First Person A needs to create and publish a public 
+	key	(N,e) where N is the product of two large primes (p,q) known only to A, e is a number which is coprime
+	to (p-1)(q-1). Lastly person A also needs to find d which satisfies d*e=1mod((p-1)(q-1)) this is used for decryption
+	If person B wants to send a message to person A they use the public key to encrypt it """
+
+
+
+
+prime1 = int(raw_input("pick a prime number:\n>"))
+prime2 = int(raw_input("pick another prime number:\n>"))
+print"These prime numbers are yours, do not tell them to anyone!"
+combiprime = prime1*prime2
+print"These can be multiplied together to make a new number.\nThis number is %r, which is part of your public key" % combiprime
+x = (prime1-1)*(prime2-1)
+print "Now pick another number with a value which is coprime to %r" % x
+coprime = int(raw_input(">"))
+print"Ok great so the public key is (%r,%r)" % (combiprime, coprime)
+encrypt = []
+
+def encryption():
+	text = raw_input("what do you want your message to be?\n")
+	tobeenc=list(text)				
+	len(text)
+	for a in range(0,len(text)):
+		letter=alphanumeric[tobeenc[a]]
+		letter2=(letter**coprime)%combiprime
+		encrypt.append(letter2)
+	print "ok so your encyrpted message is now:"
+	print encrypt
+	step=raw_input("would you like to decrypt this message?\n>")
+	if step =='yes' or 'y':
+		decryption1(coprime,combiprime,x,text)
+	else:
+		print"ok thanks!"
+		quit()
+	
+def decryption1(coprime,combiprime,x,text):
+	print "now we need to find a figure d that satisfies the equation d*e=1mod((p-1)(q-1))"
+	n=0	
+	coprime+=0.0
+	inverse=(1+(n*x))/coprime
+	while inverse.is_integer() is False:
+		inverse=(1+(n*x))/(coprime)
+		n+=1
+	iteration=n-1
+	d=int(((iteration*x)+1)/coprime)
+	print "No worries though, I've calculated this for you. Your d value is : %d" % d
+	binary=str(bin(d)[2:])
+	powers=map(int,binary)
+	powers.reverse()
+	expansion = []
+	for a in range(0,len(powers)):
+		if powers[a]==1:
+			x=2**(a)
+			expansion.append(x)
+		else:
+			x=0
+			expansion.append(x)
+	encrypt2=[]
+	def decrypting(s,t):
+		list4=[]
+		for a in range(0,len(expansion)):
+			if expansion[a]>0:
+				y=s**(expansion[a])%t
+				list4.append(y)
+			else:
+				y=0
+		mod=reduce(lambda x, y: x*y, list4)
+		ref1=mod % t
+		ref2=numericalpha[ref1]
+		encrypt2.append(ref2)
+	for a in range(0,len(text)):
+		decrypting(encrypt[a],combiprime)
+	message="".join(encrypt2)
+	print "Decrypting\n...\n...\n..."
+	print message
+
+def decryption2(coprime,combiprime,x,encrypt):
+	numbers=raw_input("Write the message you want to be decrypted and separate them by space\n>")
+	encrypt=numbers.split()
+	encrypt = map(int, encrypt)
+	print "now we need to find a figure d that satisfies the equation d*e=1mod((p-1)(q-1))"
+	n=0	
+	coprime+=0.0
+	inverse=(1+(n*x))/coprime
+	while inverse.is_integer() is False:
+		inverse=(1+(n*x))/(coprime)
+		n+=1
+	iteration=n-1
+	d=int(((iteration*x)+1)/coprime)
+	print "No worries though, I've calculated this for you. Your d value is : %d" % d
+	binary=str(bin(d)[2:])
+	powers=map(int,binary)
+	powers.reverse()
+	expansion = []
+	for a in range(0,len(powers)):
+		if powers[a]==1:
+			x=2**(a)
+			expansion.append(x)
+		else:
+			x=0
+			expansion.append(x)
+	encrypt2=[]
+	def decrypting(s,t):
+		list4=[]
+		for a in range(0,len(expansion)):
+			if expansion[a]>0:
+				y=s**(expansion[a])%t
+				list4.append(y)
+			else:
+				y=0
+		mod=reduce(lambda x, y: x*y, list4)
+		ref1=mod % t
+		ref2=numericalpha[ref1]
+		encrypt2.append(ref2)
+	for a in range(0,len(encrypt)):
+		decrypting(encrypt[a],combiprime)
+	message="".join(encrypt2)
+	print "Decrypting\n...\n...\n..."
+	print message
+
+def start():
+	choice=raw_input("Would you like to encrypt or decrypt a message?\n>")
+	if choice == "encrypt":
+		encryption()
+	else:
+		decryption2(coprime,combiprime,x,encrypt)
+		
+start()
+
+
+
